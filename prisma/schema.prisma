@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  files         File[]
+  jobs          Job[]
+  subscription  Subscription?
+  aiChats       AIChat[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model File {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName    String
+  originalName String
+  fileSize    Int
+  mimeType    String
+  storagePath String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  jobs        Job[]
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileId      String?
+  file        File?    @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  type        JobType
+  status      JobStatus @default(PENDING)
+  progress    Int      @default(0)
+  result      String?  // JSON string or URL
+  error       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum JobType {
+  MERGE
+  SPLIT
+  COMPRESS
+  TO_PDF
+  TO_IMAGE
+  AI_EMBEDDING
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        PlanType @default(FREE)
+  storageUsed Int      @default(0) // in bytes
+  storageLimit Int     @default(2147483648) // 2GB default
+  status      SubStatus @default(ACTIVE)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum PlanType {
+  FREE
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+model AIChat {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages    ChatMessage[]
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  chatId      String
+  chat        AIChat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role        MessageRole
+  content     String
+  createdAt   DateTime @default(now())
+}
+
+enum MessageRole {
+  USER
+  AI
+  SYSTEM
+}

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tools Directory | PDF Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .tool-card:hover {
+            border-color: #ff6a00;
+            background-color: #1a1a1a;
+        }
+        .tool-card:hover .tool-icon {
+            color: #ff6a00;
+        }
+        .active-filter {
+            background-color: #ff6a00;
+            color: #ffffff;
+            border-color: #ff6a00;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1d100a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #41312a;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6a00;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#ff6a00",
+                      "on-primary-fixed-variant": "#7b2f00",
+                      "inverse-on-surface": "#3d2d26",
+                      "on-tertiary-fixed": "#001d35",
+                      "secondary-container": "#454747",
+                      "primary-fixed": "#ffdbcc",
+                      "inverse-primary": "#a14000",
+                      "on-primary-fixed": "#351000",
+                      "on-secondary-fixed-variant": "#454747",
+                      "secondary": "#c6c6c7",
+                      "outline": "#a98a7d",
+                      "on-surface": "#f8ddd2",
+                      "error-container": "#93000a",
+                      "background": "#1d100a",
+                      "surface-container-lowest": "#170b06",
+                      "on-primary": "#571f00",
+                      "on-secondary-container": "#b4b5b5",
+                      "surface-container-low": "#261812",
+                      "secondary-fixed-dim": "#c6c6c7",
+                      "surface-dim": "#1d100a",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-high": "#362720",
+                      "outline-variant": "#5a4136",
+                      "on-tertiary-fixed-variant": "#00497a",
+                      "on-tertiary": "#003256",
+                      "on-background": "#f8ddd2",
+                      "error": "#ffb4ab",
+                      "on-surface-variant": "#e2bfb0",
+                      "tertiary-fixed": "#d0e4ff",
+                      "primary": "#ffb694",
+                      "surface-container": "#2b1c16",
+                      "surface-variant": "#41312a",
+                      "inverse-surface": "#f8ddd2",
+                      "surface-bright": "#46362e",
+                      "on-error": "#690005",
+                      "surface-container-highest": "#41312a",
+                      "surface": "#1d100a",
+                      "tertiary-container": "#009eff",
+                      "tertiary-fixed-dim": "#9ccaff",
+                      "on-tertiary-container": "#003357",
+                      "on-secondary": "#2f3131",
+                      "on-primary-container": "#571f00",
+                      "secondary-fixed": "#e2e2e2",
+                      "primary-fixed-dim": "#ffb694",
+                      "surface-tint": "#ffb694",
+                      "tertiary": "#9ccaff",
+                      "on-secondary-fixed": "#1a1c1c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "mono-sm": ["JetBrains Mono"],
+                      "display-lg": ["Inter"],
+                      "title-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-container selection:text-white">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary docked full-width top-0 sticky border-b border-outline-variant dark:border-outline-variant z-50">
+<div class="flex justify-between items-center h-14 px-4 md:px-8 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="draft">draft</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold tracking-tighter text-on-surface dark:text-on-surface">PDF STUDIO</h1>
+</div>
+<div class="hidden md:flex gap-6 items-center">
+<nav class="flex gap-4">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors px-3 py-1 rounded" href="#">Home</a>
+<a class="text-primary dark:text-primary font-bold hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors px-3 py-1 rounded" href="#">Tools</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors px-3 py-1 rounded" href="#">AI</a>
+</nav>
+<button class="bg-primary-container text-white px-4 py-1.5 rounded text-label-md font-bold hover:brightness-110 active:scale-95 transition-all">
+                    Upgrade to Pro
+                </button>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</div>
+</header>
+<main class="min-h-screen max-w-7xl mx-auto px-4 md:px-8 py-8 mb-20">
+<!-- Search & Filter Area -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="w-full md:max-w-xl">
+<h2 class="font-headline-lg text-headline-lg mb-2">Tools Directory</h2>
+<p class="text-on-surface-variant mb-6">Access all PDF manipulation, security, and AI enhancement tools.</p>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container rounded-lg py-3 pl-10 pr-4 text-body-md text-on-surface outline-none transition-all" placeholder="Search for a tool (e.g., 'Merge', 'Encrypt', 'Summarize')..." type="text"/>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="active-filter border border-outline-variant px-4 py-1.5 rounded-full text-label-md transition-all">All Tools</button>
+<button class="border border-outline-variant px-4 py-1.5 rounded-full text-label-md hover:border-primary transition-all">Manipulation</button>
+<button class="border border-outline-variant px-4 py-1.5 rounded-full text-label-md hover:border-primary transition-all">Conversion</button>
+<button class="border border-outline-variant px-4 py-1.5 rounded-full text-label-md hover:border-primary transition-all">Security</button>
+<button class="border border-outline-variant px-4 py-1.5 rounded-full text-label-md hover:border-primary transition-all">AI</button>
+<button class="border border-outline-variant px-4 py-1.5 rounded-full text-label-md hover:border-primary transition-all">Utility</button>
+</div>
+</div>
+</section>
+<!-- Favorites Section -->
+<section class="mb-12">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary-container" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<h3 class="font-title-md text-title-md">Favorite Tools</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Fav 1 -->
+<div class="tool-card bg-surface-container-low border border-outline-variant p-5 transition-all cursor-pointer group flex flex-col justify-between h-40">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined tool-icon text-primary transition-colors text-3xl" data-icon="call_merge">call_merge</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary-container" data-icon="close">close</span>
+</div>
+<h4 class="font-title-md text-title-md mb-1">Merge PDF</h4>
+<p class="text-on-surface-variant text-body-md line-clamp-2">Combine multiple PDF files into one document in seconds.</p>
+</div>
+</div>
+<!-- Fav 2 -->
+<div class="tool-card bg-surface-container-low border border-outline-variant p-5 transition-all cursor-pointer group flex flex-col justify-between h-40">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined tool-icon text-primary transition-colors text-3xl" data-icon="psychology">psychology</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary-container" data-icon="close">close</span>
+</div>
+<h4 class="font-title-md text-title-md mb-1">AI Summarize</h4>
+<p class="text-on-surface-variant text-body-md line-clamp-2">Extract key insights from long documents using LLMs.</p>
+</div>
+</div>
+<!-- Fav 3 -->
+<div class="tool-card bg-surface-container-low border border-outline-variant p-5 transition-all cursor-pointer group flex flex-col justify-between h-40">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined tool-icon text-primary transition-colors text-3xl" data-icon="lock">lock</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary-container" data-icon="close">close</span>
+</div>
+<h4 class="font-title-md text-title-md mb-1">Protect PDF</h4>
+<p class="text-on-surface-variant text-body-md line-clamp-2">Encrypt with high-grade passwords and permissions.</p>
+</div>
+</div>
+<!-- Fav 4 -->
+<div class="tool-card bg-surface-container-low border border-outline-variant p-5 transition-all cursor-pointer group flex flex-col justify-between h-40">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined tool-icon text-primary transition-colors text-3xl" data-icon="edit_note">edit_note</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary-container" data-icon="close">close</span>
+</div>
+<h4 class="font-title-md text-title-md mb-1">Edit PDF</h4>
+<p class="text-on-surface-variant text-body-md line-clamp-2">Direct text and image editing within the PDF structure.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- All Tools Directory (Asymmetric/Bento Style) -->
+<section>
+<div class="flex items-center gap-2 mb-8 border-b border-outline-variant pb-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="apps">apps</span>
+<h3 class="font-title-md text-title-md">Full Directory</h3>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-outline-variant border border-outline-variant overflow-hidden">
+<!-- Manipulation -->
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="split_screen">splitscreen</span>
+<h5 class="font-bold mb-1">Split PDF</h5>
+<p class="text-on-surface-variant text-label-md">Separate pages into individual files.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="auto_fix_high">auto_fix_high</span>
+<h5 class="font-bold mb-1">Compress</h5>
+<p class="text-on-surface-variant text-label-md">Reduce file size without losing quality.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="rotate_right">rotate_right</span>
+<h5 class="font-bold mb-1">Rotate</h5>
+<p class="text-on-surface-variant text-label-md">Fix orientation of pages.</p>
+</div>
+<!-- Conversion -->
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="picture_as_pdf">picture_as_pdf</span>
+<h5 class="font-bold mb-1">Word to PDF</h5>
+<p class="text-on-surface-variant text-label-md">Convert .docx to standard PDF.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="table_chart">table_chart</span>
+<h5 class="font-bold mb-1">Excel to PDF</h5>
+<p class="text-on-surface-variant text-label-md">Turn spreadsheets into documents.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="image">image</span>
+<h5 class="font-bold mb-1">JPG to PDF</h5>
+<p class="text-on-surface-variant text-label-md">Batch convert images to PDF.</p>
+</div>
+<!-- AI Tools (Highlighted) -->
+<div class="bg-surface-container-highest p-6 group cursor-pointer border-2 border-primary-container relative">
+<div class="absolute top-2 right-2 px-1.5 py-0.5 bg-primary-container text-white text-[10px] font-bold rounded">AI PRO</div>
+<span class="material-symbols-outlined text-primary mb-4 block" data-icon="translate">translate</span>
+<h5 class="font-bold mb-1">AI Translate</h5>
+<p class="text-on-surface-variant text-label-md">Translate whole documents while keeping layout.</p>
+</div>
+<div class="bg-surface-container-highest p-6 group cursor-pointer border-2 border-primary-container relative">
+<div class="absolute top-2 right-2 px-1.5 py-0.5 bg-primary-container text-white text-[10px] font-bold rounded">AI PRO</div>
+<span class="material-symbols-outlined text-primary mb-4 block" data-icon="chat">chat</span>
+<h5 class="font-bold mb-1">Chat with PDF</h5>
+<p class="text-on-surface-variant text-label-md">Ask questions to your PDF content.</p>
+</div>
+<!-- Security -->
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="draw">draw</span>
+<h5 class="font-bold mb-1">E-Sign</h5>
+<p class="text-on-surface-variant text-label-md">Legally sign documents digitally.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="lock_open">lock_open</span>
+<h5 class="font-bold mb-1">Unlock</h5>
+<p class="text-on-surface-variant text-label-md">Remove PDF password protection.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="water_drop">water_drop</span>
+<h5 class="font-bold mb-1">Watermark</h5>
+<p class="text-on-surface-variant text-label-md">Add professional stamps and text.</p>
+</div>
+<!-- Utility -->
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="format_list_numbered">format_list_numbered</span>
+<h5 class="font-bold mb-1">Page Numbers</h5>
+<p class="text-on-surface-variant text-label-md">Customize and insert page labels.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="scanner">scanner</span>
+<h5 class="font-bold mb-1">OCR Scan</h5>
+<p class="text-on-surface-variant text-label-md">Make scanned PDFs searchable.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="layers_clear">layers_clear</span>
+<h5 class="font-bold mb-1">Flatten</h5>
+<p class="text-on-surface-variant text-label-md">Merge form fields into base PDF.</p>
+</div>
+<div class="bg-surface-container-low p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary-container mb-4 block" data-icon="history">history</span>
+<h5 class="font-bold mb-1">Recover</h5>
+<p class="text-on-surface-variant text-label-md">Attempt to repair corrupted PDFs.</p>
+</div>
+</div>
+</section>
+<!-- Upsell Banner -->
+<section class="mt-20 p-8 bg-surface-container-high rounded-xl border border-primary-container/20 flex flex-col md:flex-row items-center gap-8 overflow-hidden relative">
+<div class="absolute top-0 left-0 w-2 h-full bg-primary-container"></div>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg mb-2">Power up your workflow with Pro.</h3>
+<p class="text-on-surface-variant text-body-lg mb-6 max-w-2xl">Unlock unlimited batch processing, advanced AI features, and secure cloud storage. Built for professional document engineers.</p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary-container text-white px-8 py-3 rounded-lg font-bold hover:scale-105 transition-transform">Start Free Trial</button>
+<button class="bg-transparent border border-outline px-8 py-3 rounded-lg font-bold hover:bg-surface-container transition-all">View Pricing</button>
+</div>
+</div>
+<div class="w-64 h-48 bg-surface-container-lowest rounded-lg border border-outline-variant flex items-center justify-center relative opacity-80 rotate-3 translate-x-10 translate-y-10 md:translate-y-0">
+<span class="material-symbols-outlined text-6xl text-primary/20" data-icon="rocket_launch">rocket_launch</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/10 to-transparent"></div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 bg-surface dark:bg-surface border-t border-outline-variant dark:border-outline-variant z-50">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary-container dark:text-primary-container font-bold hover:text-primary dark:hover:text-primary active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="font-label-md text-label-md">Tools</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-label-md text-label-md">AI</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</div>
+</nav>
+<!-- Interactive Search Logic (Placeholder) -->
+<script>
+        document.querySelector('input').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.bg-surface-container-low, .bg-surface-container-highest');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h5')?.innerText.toLowerCase() || card.querySelector('h4')?.innerText.toLowerCase() || "";
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter button behavior
+        const filterBtns = document.querySelectorAll('button[class*="border-outline-variant"]');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active-filter'));
+                btn.classList.add('active-filter');
+            });
+        });
+    </script>
+</body></html>
