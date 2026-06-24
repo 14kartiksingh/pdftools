@@ -60,6 +60,9 @@ model Job {
 enum JobType {
   MERGE
   SPLIT
+  EXTRACT
+  DELETE_PAGES
+  ROTATE
   COMPRESS
   TO_PDF
   TO_IMAGE

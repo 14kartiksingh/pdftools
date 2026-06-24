@@ -97,35 +97,54 @@ export default async function HomePage() {
         {/* Quick Actions Grid */}
         <section>
           <h2 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Link href="/tools/merge-pdf" className="group flex flex-col items-center justify-center p-6 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg">
-              <div className="w-12 h-12 mb-4 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <Link href="/tools/merge-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
                 <span className="material-symbols-outlined">call_merge</span>
               </div>
-              <span className="font-title-md text-title-md">Merge</span>
-              <span className="font-label-md text-label-md text-on-surface-variant mt-1">Combine PDFs</span>
+              <span className="font-title-sm text-title-sm">Merge</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Combine PDFs</span>
             </Link>
-            <button className="group flex flex-col items-center justify-center p-6 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg opacity-50 cursor-not-allowed">
-              <div className="w-12 h-12 mb-4 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+            
+            <Link href="/tools/split-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
                 <span className="material-symbols-outlined">call_split</span>
               </div>
-              <span className="font-title-md text-title-md">Split</span>
-              <span className="font-label-md text-label-md text-on-surface-variant mt-1">Coming Soon</span>
-            </button>
-            <button className="group flex flex-col items-center justify-center p-6 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg opacity-50 cursor-not-allowed">
-              <div className="w-12 h-12 mb-4 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+              <span className="font-title-sm text-title-sm">Split</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Separate PDFs</span>
+            </Link>
+
+            <Link href="/tools/extract-pages" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">file_copy</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Extract</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Select Pages</span>
+            </Link>
+
+            <Link href="/tools/delete-pages" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-error-container group-hover:text-on-error-container transition-colors">
+                <span className="material-symbols-outlined">delete</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Delete</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Remove Pages</span>
+            </Link>
+
+            <Link href="/tools/rotate-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">rotate_right</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Rotate</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Adjust Angle</span>
+            </Link>
+
+            <Link href="/tools/optimize-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
                 <span className="material-symbols-outlined">compress</span>
               </div>
-              <span className="font-title-md text-title-md">Compress</span>
-              <span className="font-label-md text-label-md text-on-surface-variant mt-1">Coming Soon</span>
-            </button>
-            <button className="group flex flex-col items-center justify-center p-6 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg opacity-50 cursor-not-allowed">
-              <div className="w-12 h-12 mb-4 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">description</span>
-              </div>
-              <span className="font-title-md text-title-md">To PDF</span>
-              <span className="font-label-md text-label-md text-on-surface-variant mt-1">Coming Soon</span>
-            </button>
+              <span className="font-title-sm text-title-sm">Optimize</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Rebuild Structure</span>
+            </Link>
           </div>
         </section>
 
