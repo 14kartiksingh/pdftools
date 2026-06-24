@@ -4,7 +4,7 @@ import path from 'path';
 
 export type CompressionLevel = 'Basic' | 'Strong' | 'Extreme';
 
-function getGhostscriptPath(): string {
+export function getGhostscriptPath(): string {
   const isWin = process.platform === 'win32';
   if (!isWin) return 'gs'; // Unix uses 'gs' typically in PATH
 

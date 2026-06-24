@@ -97,7 +97,7 @@ export default async function HomePage() {
         {/* Quick Actions Grid */}
         <section>
           <h2 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <Link href="/tools/merge-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
               <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
                 <span className="material-symbols-outlined">call_merge</span>
@@ -144,6 +144,22 @@ export default async function HomePage() {
               </div>
               <span className="font-title-sm text-title-sm">Optimize</span>
               <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Rebuild Structure</span>
+            </Link>
+
+            <Link href="/tools/pdf-to-image" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">image</span>
+              </div>
+              <span className="font-title-sm text-title-sm">PDF to Image</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Extract JPEGs</span>
+            </Link>
+
+            <Link href="/tools/image-to-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">collections</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Image to PDF</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Combine Images</span>
             </Link>
           </div>
         </section>

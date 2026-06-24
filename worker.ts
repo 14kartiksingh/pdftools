@@ -61,6 +61,48 @@ const worker = new Worker('pdf-jobs', async (job: Job) => {
           result: JSON.stringify(resultPayload)
         }
       });
+    } else if (job.name === 'TO_IMAGE') {
+      const { inputPath, outputPath, userId, originalName, newFileName } = job.data;
+      
+      const { pdfToImage } = require('./lib/tools/pdfToImage');
+      
+      await pdfToImage(inputPath, outputPath, (progress: number) => {
+        job.updateProgress(progress);
+        prisma.job.update({
+          where: { id: job.opts.jobId },
+          data: { progress }
+        }).catch(console.error);
+      });
+      
+      const stats = fs.statSync(outputPath);
+      const outputFileSize = stats.size;
+
+      const zipFile = await prisma.file.create({
+        data: {
+          userId,
+          fileName: newFileName,
+          originalName: `${originalName.replace(/\.pdf$/i, '')}-images.zip`,
+          fileSize: outputFileSize,
+          mimeType: 'application/zip',
+          storagePath: outputPath
+        }
+      });
+
+      resultPayload = { 
+        outputPath, 
+        fileId: zipFile.id,
+        newSize: outputFileSize
+      };
+
+      await prisma.job.update({
+        where: { id: job.opts.jobId },
+        data: {
+          status: 'COMPLETED',
+          progress: 100,
+          fileId: zipFile.id,
+          result: JSON.stringify(resultPayload)
+        }
+      });
     } else {
       throw new Error(`Unsupported job type: ${job.name}`);
     }
