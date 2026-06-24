@@ -5,16 +5,20 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
+import { auth } from "@/auth";
+import UserMenu from "./components/UserMenu";
+
 export const metadata: Metadata = {
   title: "PDF STUDIO | Home Dashboard",
   description: "High-performance PDF and AI tools for professionals.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en" className="dark">
       <head>
@@ -34,9 +38,14 @@ export default function RootLayout({
               <span className="text-mono-sm text-on-surface-variant border border-outline-variant px-1 rounded">⌘K</span>
             </div>
           </div>
-          <button className="bg-primary-container text-on-primary-container px-4 py-2 rounded font-label-md text-label-md font-bold uppercase tracking-wider hover:brightness-110 active:scale-95 duration-100">
-            Upgrade to Pro
-          </button>
+          <div className="flex items-center gap-4">
+            <button className="bg-primary-container text-on-primary-container px-4 py-2 rounded font-label-md text-label-md font-bold uppercase tracking-wider hover:brightness-110 active:scale-95 duration-100 hidden md:block">
+              Upgrade to Pro
+            </button>
+            {session?.user && (
+              <UserMenu user={{ name: session.user.name, email: session.user.email }} />
+            )}
+          </div>
         </header>
 
         {children}
