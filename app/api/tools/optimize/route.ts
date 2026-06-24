@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import prisma from "@/lib/prisma"
-import { PDFDocument } from "pdf-lib"
-import { readFile, writeFile } from "fs/promises"
 import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import fs from "fs"
+import { addPdfJob } from "@/lib/queue"
 
 export const dynamic = "force-dynamic"
 
@@ -16,7 +15,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { fileId } = await req.json()
+    const { fileId, level = "Basic" } = await req.json()
     if (!fileId) {
       return NextResponse.json({ error: "File ID is required" }, { status: 400 })
     }
@@ -30,14 +29,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "File not found" }, { status: 404 })
     }
 
-    // 2. Load PDF into pdf-lib
-    const pdfBytes = await readFile(sourceFile.storagePath)
-    const pdfDoc = await PDFDocument.load(pdfBytes)
-
-    // 3. Optimize PDF (Save with object streams and compress)
-    const optimizedBytes = await pdfDoc.save({ useObjectStreams: true })
-
-    // 4. Save to disk
+    // 2. Prepare output path
     const processedDir = path.join(process.cwd(), "storage", "processed")
     if (!fs.existsSync(processedDir)) {
       fs.mkdirSync(processedDir, { recursive: true })
@@ -45,37 +37,34 @@ export async function POST(req: Request) {
 
     const newFileName = `${uuidv4()}.pdf`
     const newStoragePath = path.join(processedDir, newFileName)
-    await writeFile(newStoragePath, optimizedBytes)
 
-    // 5. Create new file record
-    const optimizedFile = await prisma.file.create({
+    // 3. Create Job record
+    const job = await prisma.job.create({
       data: {
         userId: session.user.id,
-        fileName: newFileName,
-        originalName: `optimized-${sourceFile.originalName}`,
-        fileSize: optimizedBytes.length,
-        mimeType: "application/pdf",
-        storagePath: newStoragePath
+        fileId: sourceFile.id,
+        type: "COMPRESS",
+        status: "PENDING",
+        progress: 0
       }
     })
 
-    // 6. Create Job record
-    await prisma.job.create({
-      data: {
-        userId: session.user.id,
-        fileId: optimizedFile.id,
-        type: "COMPRESS", // Using COMPRESS for optimization in enum
-        status: "COMPLETED",
-        progress: 100
-      }
+    // 4. Dispatch job to BullMQ
+    await addPdfJob(job.id, "COMPRESS", {
+      inputPath: sourceFile.storagePath,
+      outputPath: newStoragePath,
+      level,
+      userId: session.user.id,
+      originalName: sourceFile.originalName,
+      originalSize: sourceFile.fileSize,
+      newFileName
     })
 
     return NextResponse.json({ 
       success: true, 
-      file: optimizedFile,
-      originalSize: sourceFile.fileSize,
-      newSize: optimizedBytes.length 
-    })
+      jobId: job.id,
+      status: "PENDING"
+    }, { status: 202 })
   } catch (error: any) {
     console.error("Optimize PDF Error:", error)
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
