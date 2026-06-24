@@ -67,6 +67,9 @@ enum JobType {
   TO_PDF
   TO_IMAGE
   AI_EMBEDDING
+  ADD_WATERMARK
+  ADD_PAGE_NUMBERS
+  REORDER
 }
 
 enum JobStatus {

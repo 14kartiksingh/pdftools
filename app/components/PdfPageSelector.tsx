@@ -6,7 +6,7 @@ interface PdfPageSelectorProps {
   file: File | null
   selectedPages: number[]
   onSelectionChange: (pages: number[]) => void
-  selectionMode?: "multiple" | "single"
+  selectionMode?: "multiple" | "single" | "reorder"
 }
 
 export default function PdfPageSelector({ file, selectedPages, onSelectionChange, selectionMode = "multiple" }: PdfPageSelectorProps) {
@@ -85,10 +85,25 @@ export default function PdfPageSelector({ file, selectedPages, onSelectionChange
       return
     }
 
+    if (selectionMode === "reorder") {
+      if (selectedPages.includes(pageNum)) {
+        onSelectionChange(selectedPages.filter(p => p !== pageNum))
+      } else {
+        onSelectionChange([...selectedPages, pageNum]) // Do not sort for reorder
+      }
+      return
+    }
+
     if (selectedPages.includes(pageNum)) {
       onSelectionChange(selectedPages.filter(p => p !== pageNum))
     } else {
       onSelectionChange([...selectedPages, pageNum].sort((a, b) => a - b))
+    }
+  }
+
+  const handleUndo = () => {
+    if (selectedPages.length > 0) {
+      onSelectionChange(selectedPages.slice(0, -1))
     }
   }
 
@@ -130,12 +145,35 @@ export default function PdfPageSelector({ file, selectedPages, onSelectionChange
             </button>
           </div>
         )}
+        {selectionMode === "reorder" && (
+          <div className="flex gap-2">
+            <button 
+              type="button"
+              onClick={handleUndo}
+              disabled={selectedPages.length === 0}
+              className="text-primary text-label-sm font-bold uppercase hover:underline disabled:opacity-50 disabled:no-underline"
+            >
+              Undo Last
+            </button>
+            <span className="text-outline-variant">|</span>
+            <button 
+              type="button"
+              onClick={() => onSelectionChange([])}
+              disabled={selectedPages.length === 0}
+              className="text-primary text-label-sm font-bold uppercase hover:underline disabled:opacity-50 disabled:no-underline"
+            >
+              Clear Selection
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto p-2">
         {pages.map((dataUrl, idx) => {
           const pageNum = idx + 1
           const isSelected = selectedPages.includes(pageNum)
+          const orderIndex = selectionMode === "reorder" ? selectedPages.indexOf(pageNum) + 1 : 0
+
           return (
             <button 
               key={idx}
@@ -152,7 +190,13 @@ export default function PdfPageSelector({ file, selectedPages, onSelectionChange
                   isSelected ? "bg-primary border-primary text-on-primary" : "bg-surface/80 border-outline-variant text-transparent"
                 }`}
               >
-                {isSelected && <span className="material-symbols-outlined text-sm">check</span>}
+                {isSelected && (
+                  selectionMode === "reorder" ? (
+                    <span className="font-bold text-xs">{orderIndex}</span>
+                  ) : (
+                    <span className="material-symbols-outlined text-sm">check</span>
+                  )
+                )}
               </div>
               
               <div className="absolute bottom-0 inset-x-0 bg-surface/90 backdrop-blur-sm p-1 text-center border-t border-outline-variant pointer-events-none">
@@ -163,7 +207,7 @@ export default function PdfPageSelector({ file, selectedPages, onSelectionChange
         })}
       </div>
       
-      {selectionMode === "multiple" && selectedPages.length > 0 && (
+      {selectionMode !== "single" && selectedPages.length > 0 && (
         <p className="mt-4 text-center font-body-sm text-on-surface-variant">
           {selectedPages.length} {selectedPages.length === 1 ? "page" : "pages"} selected
         </p>

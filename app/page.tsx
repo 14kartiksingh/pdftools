@@ -161,6 +161,30 @@ export default async function HomePage() {
               <span className="font-title-sm text-title-sm">Image to PDF</span>
               <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Combine Images</span>
             </Link>
+
+            <Link href="/tools/reorder" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">reorder</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Reorder</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Organize Pages</span>
+            </Link>
+
+            <Link href="/tools/watermark" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">branding_watermark</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Watermark</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Stamp PDF</span>
+            </Link>
+
+            <Link href="/tools/page-numbers" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+                <span className="material-symbols-outlined">format_list_numbered</span>
+              </div>
+              <span className="font-title-sm text-title-sm">Page Numbers</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Add Numerals</span>
+            </Link>
           </div>
         </section>
 
