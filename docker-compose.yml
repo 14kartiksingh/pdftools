@@ -1,6 +1,49 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdfstudio-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://root:rootpassword@db:5432/pdfstudio?schema=public
+      - REDIS_URL=redis://redis:6379
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+    env_file:
+      - .env
+    volumes:
+      - storage-data:/app/storage
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdfstudio-worker
+    restart: unless-stopped
+    command: npm run worker
+    environment:
+      - DATABASE_URL=postgresql://root:rootpassword@db:5432/pdfstudio?schema=public
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+    env_file:
+      - .env
+    volumes:
+      - storage-data:/app/storage
+    depends_on:
+      - db
+      - redis
+
   db:
     image: postgres:15-alpine
     container_name: pdfstudio-postgres
@@ -8,8 +51,6 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpassword
       POSTGRES_DB: pdfstudio
-    ports:
-      - "5440:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
@@ -17,8 +58,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: pdfstudio-redis
-    ports:
-      - "6379:6379"
     volumes:
       - redisdata:/data
     restart: unless-stopped
@@ -26,3 +65,4 @@ services:
 volumes:
   pgdata:
   redisdata:
+  storage-data:
