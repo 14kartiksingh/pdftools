@@ -8,6 +8,10 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jet
 import { auth } from "@/auth";
 import UserMenu from "./components/UserMenu";
 
+import UpgradeButton from "./components/UpgradeButton";
+
+import MobileNavigation from "./components/MobileNavigation";
+
 export const metadata: Metadata = {
   title: "PDF STUDIO | Home Dashboard",
   description: "High-performance PDF and AI tools for professionals.",
@@ -39,9 +43,7 @@ export default async function RootLayout({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="bg-primary-container text-on-primary-container px-4 py-2 rounded font-label-md text-label-md font-bold uppercase tracking-wider hover:brightness-110 active:scale-95 duration-100 hidden md:block">
-              Upgrade to Pro
-            </button>
+            <UpgradeButton />
             {session?.user && (
               <UserMenu user={{ name: session.user.name, email: session.user.email }} />
             )}
@@ -51,24 +53,7 @@ export default async function RootLayout({
         {children}
 
         {/* Bottom Navigation Bar (Mobile Only) */}
-        <nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 bg-surface border-t border-outline-variant z-50">
-          <button className="flex flex-col items-center justify-center text-primary-container font-bold">
-            <span className="material-symbols-outlined">home</span>
-            <span className="font-label-md text-label-md">Home</span>
-          </button>
-          <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">build</span>
-            <span className="font-label-md text-label-md">Tools</span>
-          </button>
-          <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">psychology</span>
-            <span className="font-label-md text-label-md">AI</span>
-          </button>
-          <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">person</span>
-            <span className="font-label-md text-label-md">Profile</span>
-          </button>
-        </nav>
+        <MobileNavigation />
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq';
 import Redis from 'ioredis';
 
-const q = new Queue('pdf-jobs', { connection: new Redis() });
+const q = new Queue('pdf-jobs', { connection: new Redis() as any });
 
 q.add('TO_IMAGE', { 
   inputPath: 'test.pdf', 

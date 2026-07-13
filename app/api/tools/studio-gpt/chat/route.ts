@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
       // 2. Extract keywords from current user message
       const stopWords = new Set(["the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "with", "is", "are", "am", "was", "were", "be", "this", "that", "it", "of", "how", "what", "why", "when", "who", "which", "explain", "summarize", "please", "can", "you", "tell", "me"]);
-      const queryWords = message.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => !stopWords.has(w) && w.length > 2);
+      const queryWords = message.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter((w: string) => !stopWords.has(w) && w.length > 2);
       
       // 3. Score chunks
       const scoredChunks = chunks.map((chunk, index) => {
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
         let score = 0;
         
         if (chunkLower.includes(message.toLowerCase())) score += 50;
-        queryWords.forEach(kw => {
+        queryWords.forEach((kw: string) => {
           const matches = chunkLower.split(kw).length - 1;
           score += matches * 5;
         });
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
     
     // Inject context right before the latest user message
     if (injectedContextMessage) {
-      dbMessages.splice(dbMessages.length - 1, 0, injectedContextMessage);
+      dbMessages.splice(dbMessages.length - 1, 0, injectedContextMessage as any);
     }
 
     // Map DB roles to OpenAI roles

@@ -55,7 +55,8 @@ export default function PdfPageSelector({ file, selectedPages, onSelectionChange
 
           await page.render({
             canvasContext: context,
-            viewport: thumbViewport
+            viewport: thumbViewport,
+            canvas: canvas
           }).promise
 
           newPages.push(canvas.toDataURL("image/jpeg", 0.8))

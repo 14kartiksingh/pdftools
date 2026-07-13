@@ -284,10 +284,10 @@ const worker = new Worker('pdf-jobs', async (job: Job) => {
     
     throw error;
   }
-}, { connection });
+}, { connection: connection as any });
 
 import { Queue } from 'bullmq';
-const pdfQueue = new Queue('pdf-jobs', { connection });
+const pdfQueue = new Queue('pdf-jobs', { connection: connection as any });
 
 worker.on('ready', async () => {
   console.log('PDF Worker is listening for jobs...');

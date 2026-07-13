@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -210,6 +211,10 @@ export default function StudioGPT() {
 
   return (
     <main className="max-w-4xl mx-auto p-4 md:p-8 h-[calc(100vh-80px)] flex flex-col">
+      <Link href="/" className="inline-flex items-center text-primary font-bold uppercase text-label-md mb-8 hover:underline">
+        <span className="material-symbols-outlined mr-2">arrow_back</span>
+        Back to Dashboard
+      </Link>
       <div className="mb-6">
         <h1 className="font-display-sm text-display-sm">Studio GPT</h1>
         <p className="text-on-surface-variant font-body-md mt-1">Chat naturally with your PDFs.</p>

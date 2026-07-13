@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       }
     } else if (mode === "custom" && ranges && Array.isArray(ranges)) {
       for (const rangeStr of ranges) {
-        const parts = rangeStr.split("-").map(s => parseInt(s.trim()))
+        const parts = rangeStr.split("-").map((s: string) => parseInt(s.trim()))
         if (parts.length === 1 && !isNaN(parts[0])) {
           splits.push([parts[0] - 1])
         } else if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {

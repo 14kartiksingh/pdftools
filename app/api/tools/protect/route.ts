@@ -10,7 +10,7 @@ const connection = new IORedis(process.env.REDIS_URL || "redis://localhost:6379"
   maxRetriesPerRequest: null
 })
 
-const pdfQueue = new Queue("pdf-jobs", { connection })
+const pdfQueue = new Queue("pdf-jobs", { connection: connection as any })
 
 export async function POST(req: Request) {
   try {

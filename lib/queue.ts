@@ -5,7 +5,7 @@ const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', 
   maxRetriesPerRequest: null
 });
 
-export const pdfJobQueue = new Queue('pdf-jobs', { connection });
+export const pdfJobQueue = new Queue('pdf-jobs', { connection: connection as any });
 
 export async function addPdfJob(jobId: string, type: string, data: any) {
   return await pdfJobQueue.add(type, data, {

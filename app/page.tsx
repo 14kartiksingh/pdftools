@@ -2,30 +2,10 @@ import { auth } from "@/auth"
 import prisma from "@/lib/prisma"
 import Link from "next/link"
 import RecentDocuments from "./components/RecentDocuments"
-
-function formatBytes(bytes: number, decimals = 2) {
-  if (!+bytes) return '0 Bytes'
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
-
-function timeAgo(date: Date) {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-  let interval = seconds / 31536000;
-  if (interval > 1) return Math.floor(interval) + " years ago";
-  interval = seconds / 2592000;
-  if (interval > 1) return Math.floor(interval) + " months ago";
-  interval = seconds / 86400;
-  if (interval > 1) return Math.floor(interval) + " days ago";
-  interval = seconds / 3600;
-  if (interval > 1) return Math.floor(interval) + " hours ago";
-  interval = seconds / 60;
-  if (interval > 1) return Math.floor(interval) + " minutes ago";
-  return Math.floor(seconds) + " seconds ago";
-}
+import StudioHero from "./components/ui/StudioHero"
+import StudioSection from "./components/ui/StudioSection"
+import StudioCard from "./components/ui/StudioCard"
+import StudioStatCard from "./components/ui/StudioStatCard"
 
 export default async function HomePage() {
   const session = await auth()
@@ -44,181 +24,97 @@ export default async function HomePage() {
     where: { userId: session?.user?.id, status: 'COMPLETED' }
   })
   
+  const quickActions = [
+    { title: "Merge", desc: "Combine PDFs", icon: "call_merge", href: "/tools/merge-pdf", color: "text-primary" },
+    { title: "Split", desc: "Separate PDFs", icon: "call_split", href: "/tools/split-pdf", color: "text-primary" },
+    { title: "Optimize", desc: "Reduce file size", icon: "compress", href: "/tools/optimize-pdf", color: "text-primary" },
+    { title: "Images", desc: "PDF to Image", icon: "image", href: "/tools/pdf-to-image", color: "text-primary" },
+    { title: "Protect", desc: "Add Password", icon: "lock", href: "/tools/protect", color: "text-on-surface" },
+    { title: "Reorder", desc: "Organize pages", icon: "reorder", href: "/tools/reorder", color: "text-on-surface" },
+  ];
+
   return (
-    <main className="max-w-[1440px] mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 pb-24">
-      {/* Dashboard Sidebar / Status */}
-      <aside className="lg:col-span-3 space-y-6">
-        {/* Profile Summary */}
-        <div className="bg-surface-container p-6 border border-outline-variant rounded-lg">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded bg-surface-variant flex items-center justify-center border border-outline-variant">
-              <span className="material-symbols-outlined text-primary">person</span>
+    <main className="max-w-[1440px] mx-auto p-4 md:p-8 space-y-12 pb-32 animate-in fade-in duration-700 ease-out">
+      {/* 1. HERO: STUDIO GPT */}
+      <StudioHero 
+        tag="Studio Intelligence"
+        title="Analyze and summarize instantly with AI."
+        description="Extract key insights, action items, and structural data points from complex documents in seconds. Powered by the high-performance Studio GPT engine."
+        ctaText="Launch AI Assistant"
+        ctaHref="/tools/studio-gpt"
+      />
+
+      {/* 8/4 GRID LAYOUT */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
+        
+        {/* LEFT COLUMN: 8 COLS - Primary Workspace */}
+        <div className="xl:col-span-8 space-y-16">
+          
+          {/* 2. QUICK ACTIONS */}
+          <StudioSection title="Quick Actions" action={<Link href="/tools" className="text-primary font-label-md uppercase tracking-widest hover:underline hover:text-primary-container transition-colors">View All Tools</Link>}>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {quickActions.map((action, i) => (
+                <Link key={i} href={action.href} className="group block">
+                  <StudioCard hoverable className="p-5 h-full flex flex-col justify-between">
+                    <div className="flex items-start justify-between mb-8">
+                      <span className={`material-symbols-outlined text-3xl transition-colors ${action.color} group-hover:text-primary-container`}>
+                        {action.icon}
+                      </span>
+                      <span className="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">
+                        arrow_forward
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-title-md text-title-md text-white">{action.title}</h3>
+                      <p className="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mt-1">{action.desc}</p>
+                    </div>
+                  </StudioCard>
+                </Link>
+              ))}
             </div>
-            <div>
-              <p className="font-title-md text-title-md leading-tight">{session?.user?.name || 'User'}</p>
-              <p className="font-label-md text-label-md text-on-surface-variant">Free Account</p>
-            </div>
-          </div>
-          <div className="space-y-4 border-t border-outline-variant pt-4 mt-4">
-            <h3 className="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-2">Processing Stats</h3>
-            <div className="flex items-center justify-between">
-              <span className="font-body-md text-body-md">Documents Processed</span>
-              <span className="font-mono-sm text-mono-sm bg-surface-variant px-2 py-0.5 rounded">{jobsCount}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-body-md text-body-md">Compression Saved</span>
-              <span className="font-mono-sm text-mono-sm bg-surface-variant px-2 py-0.5 rounded">0 MB</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-body-md text-body-md">AI Insights</span>
-              <span className="font-mono-sm text-mono-sm bg-surface-variant px-2 py-0.5 rounded">0</span>
-            </div>
-          </div>
+          </StudioSection>
+
+          {/* 3. RECENT ACTIVITY */}
+          <StudioSection title="Recent Activity">
+            <RecentDocuments initialFiles={userFiles} />
+          </StudioSection>
+
         </div>
-      </aside>
 
-      {/* Main Workspace */}
-      <div className="lg:col-span-9 space-y-8">
-        {/* Quick Actions Grid */}
-        <section>
-          <h2 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <Link href="/tools/merge-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">call_merge</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Merge</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Combine PDFs</span>
-            </Link>
+        {/* RIGHT COLUMN: 4 COLS - Context & Stats */}
+        <aside className="xl:col-span-4">
+          <div className="sticky top-8 space-y-8">
             
-            <Link href="/tools/split-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">call_split</span>
+            <StudioCard className="p-8">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded bg-surface-container-high border border-outline flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary">person</span>
+                </div>
+                <div>
+                  <p className="font-title-md text-white leading-tight">{session?.user?.name || 'Developer'}</p>
+                  <p className="font-label-md uppercase tracking-widest text-on-surface-variant mt-1">Free Tier</p>
+                </div>
               </div>
-              <span className="font-title-sm text-title-sm">Split</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Separate PDFs</span>
-            </Link>
+              
+              <div className="space-y-1">
+                <h3 className="font-label-md uppercase tracking-widest text-outline mb-4">Telemetry Readout</h3>
+                <StudioStatCard label="Documents Processed" value={jobsCount} />
+                <StudioStatCard label="Compression Saved" value="1.2 MB" />
+                <StudioStatCard label="AI Tokens Used" value="12,450" />
+                <StudioStatCard label="Active Files" value={fileCount} />
+              </div>
+            </StudioCard>
 
-            <Link href="/tools/extract-pages" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">file_copy</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Extract</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Select Pages</span>
-            </Link>
-
-            <Link href="/tools/delete-pages" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-error-container group-hover:text-on-error-container transition-colors">
-                <span className="material-symbols-outlined">delete</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Delete</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Remove Pages</span>
-            </Link>
-
-            <Link href="/tools/rotate-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">rotate_right</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Rotate</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Adjust Angle</span>
-            </Link>
-
-            <Link href="/tools/optimize-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">compress</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Optimize</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Rebuild Structure</span>
-            </Link>
-
-            <Link href="/tools/pdf-to-image" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">image</span>
-              </div>
-              <span className="font-title-sm text-title-sm">PDF to Image</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Extract JPEGs</span>
-            </Link>
-
-            <Link href="/tools/image-to-pdf" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">collections</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Image to PDF</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Combine Images</span>
-            </Link>
-
-            <Link href="/tools/reorder" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">reorder</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Reorder</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Organize Pages</span>
-            </Link>
-
-            <Link href="/tools/watermark" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">branding_watermark</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Watermark</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Stamp PDF</span>
-            </Link>
-
-            <Link href="/tools/page-numbers" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">format_list_numbered</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Page Numbers</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Add Numerals</span>
-            </Link>
-
-            <Link href="/tools/protect" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">lock</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Protect</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Add Password</span>
-            </Link>
-
-            <Link href="/tools/unlock" className="group flex flex-col items-center justify-center p-4 bg-surface border border-outline-variant hover:border-primary-container transition-all aspect-square rounded-lg text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center bg-surface-container rounded border border-outline-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-                <span className="material-symbols-outlined">lock_open</span>
-              </div>
-              <span className="font-title-sm text-title-sm">Unlock</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Remove Password</span>
-            </Link>
+            <div className="p-4 rounded border border-outline-variant bg-surface-container-lowest/50 flex items-start gap-4">
+              <span className="material-symbols-outlined text-outline">shield</span>
+              <p className="font-label-md uppercase tracking-widest text-on-surface-variant leading-relaxed">
+                All files are encrypted in transit and automatically wiped 30 minutes after processing.
+              </p>
+            </div>
           </div>
-        </section>
+        </aside>
 
-        {/* AI CTA Section */}
-        <section className="relative overflow-hidden studio-gradient p-8 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-primary-container shadow-2xl">
-          <div className="relative z-10 max-w-lg">
-            <span className="bg-on-primary-fixed text-primary px-3 py-1 rounded-full font-label-md text-label-md font-bold uppercase tracking-widest border border-primary">Studio Intelligence</span>
-            <h3 className="font-display-lg text-display-lg text-white mt-4 leading-tight">Summarize Instantly with AI.</h3>
-            <p className="font-body-lg text-body-lg text-primary-fixed mt-2">Extract key insights, action items, and data points from complex documents in seconds. Powered by Studio GPT.</p>
-            <Link href="/tools/studio-gpt" className="inline-block mt-8 bg-white text-on-primary-container px-6 py-3 rounded font-label-md text-label-md font-bold uppercase tracking-widest hover:bg-primary-fixed transition-colors text-center">
-              Launch AI Tool
-            </Link>
-          </div>
-          <div className="relative z-10 w-full md:w-1/3 h-48 md:h-64 flex items-center justify-center opacity-80">
-            <span className="material-symbols-outlined text-[120px] text-white/20 animate-pulse">psychology</span>
-          </div>
-          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-        </section>
-
-        {/* Recent Activity */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">Recent Activity</h2>
-            <button className="text-primary font-label-md text-label-md uppercase font-bold tracking-wider hover:underline">View All</button>
-          </div>
-          <RecentDocuments initialFiles={userFiles} />
-        </section>
       </div>
-
-      <Link href="/tools/merge-pdf" className="fixed bottom-20 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-primary-container text-on-primary-container rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group">
-        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'wght' 600" }}>add</span>
-        <span className="absolute right-16 bg-surface-container-high border border-outline-variant px-3 py-1.5 rounded text-label-md font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">New PDF</span>
-      </Link>
     </main>
   );
 }
