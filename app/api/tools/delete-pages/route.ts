@@ -70,7 +70,8 @@ export async function POST(req: Request) {
         originalName: `deleted-${sourceFile.originalName}`,
         fileSize: finalBytes.length,
         mimeType: "application/pdf",
-        storagePath: newStoragePath
+        storagePath: newStoragePath,
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
       }
     })
 

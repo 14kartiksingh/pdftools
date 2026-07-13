@@ -60,6 +60,7 @@ export async function POST(req: Request) {
         fileSize: mergedPdfBytes.length,
         mimeType: "application/pdf",
         storagePath,
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
       }
     })
 

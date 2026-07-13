@@ -83,7 +83,8 @@ export async function POST(req: Request) {
         originalName: "converted-images.pdf",
         fileSize: stats.size,
         mimeType: "application/pdf",
-        storagePath: newStoragePath
+        storagePath: newStoragePath,
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
       }
     })
 

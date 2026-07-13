@@ -30,6 +30,8 @@ export async function POST(req: Request) {
 
       await writeFile(storagePath, buffer)
 
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
+
       const dbFile = await prisma.file.create({
         data: {
           userId: session.user.id as string,
@@ -38,6 +40,7 @@ export async function POST(req: Request) {
           fileSize: file.size,
           mimeType: file.type || "application/pdf",
           storagePath,
+          expiresAt,
         }
       })
 

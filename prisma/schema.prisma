@@ -36,6 +36,7 @@ model File {
   fileSize    Int
   mimeType    String
   storagePath String
+  expiresAt   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
@@ -70,6 +71,8 @@ enum JobType {
   ADD_WATERMARK
   ADD_PAGE_NUMBERS
   REORDER
+  PROTECT
+  UNLOCK
 }
 
 enum JobStatus {

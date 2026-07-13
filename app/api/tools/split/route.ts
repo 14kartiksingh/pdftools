@@ -109,7 +109,8 @@ export async function POST(req: Request) {
         originalName: `split-${baseName}.zip`,
         fileSize: zipBuffer.length,
         mimeType: "application/zip",
-        storagePath: newStoragePath
+        storagePath: newStoragePath,
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
       }
     })
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 function formatBytes(bytes: number, decimals = 2) {
@@ -26,6 +26,20 @@ function timeAgo(dateInput: any) {
   interval = seconds / 60;
   if (interval > 1) return Math.floor(interval) + " minutes ago";
   return Math.floor(seconds) + " seconds ago";
+}
+
+function RelativeTime({ date }: { date: any }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <span suppressHydrationWarning>{new Date(date).toISOString().split('T')[0]}</span>
+  }
+
+  return <span>{timeAgo(date)}</span>
 }
 
 export default function RecentDocuments({ initialFiles }: { initialFiles: any[] }) {
@@ -82,7 +96,9 @@ export default function RecentDocuments({ initialFiles }: { initialFiles: any[] 
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right font-mono-sm text-mono-sm text-on-surface-variant">{formatBytes(file.fileSize)}</td>
-                  <td className="px-6 py-4 text-right font-body-md text-body-md text-on-surface-variant">{timeAgo(file.createdAt)}</td>
+                  <td className="px-6 py-4 text-right font-body-md text-body-md text-on-surface-variant">
+                    <RelativeTime date={file.createdAt} />
+                  </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                       <a href={`/api/files/${file.id}`} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-surface-container-highest rounded text-on-surface-variant hover:text-primary transition-colors" title="View">
@@ -101,6 +117,12 @@ export default function RecentDocuments({ initialFiles }: { initialFiles: any[] 
             )}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4 p-3 bg-surface-variant/50 rounded flex items-start gap-3 border border-outline-variant">
+        <span className="material-symbols-outlined text-primary text-xl mt-0.5">info</span>
+        <p className="font-body-md text-body-md text-on-surface-variant">
+          Available for download. Files are automatically deleted after 30 minutes to protect your privacy.
+        </p>
       </div>
 
       {/* Delete Confirmation Modal */}
