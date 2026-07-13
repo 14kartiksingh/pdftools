@@ -10,9 +10,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://root:rootpassword@db:5432/pdfstudio?schema=public
+      - DATABASE_URL=postgresql://pdfstudio:${POSTGRES_PASSWORD}@db:5432/pdfstudio?schema=public
       - REDIS_URL=redis://redis:6379
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - AUTH_SECRET=${AUTH_SECRET}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL}
@@ -21,8 +22,10 @@ services:
     volumes:
       - storage-data:/app/storage
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   worker:
     build:
@@ -30,9 +33,9 @@ services:
       dockerfile: Dockerfile
     container_name: pdfstudio-worker
     restart: unless-stopped
-    command: npm run worker
+    command: tsx worker.ts
     environment:
-      - DATABASE_URL=postgresql://root:rootpassword@db:5432/pdfstudio?schema=public
+      - DATABASE_URL=postgresql://pdfstudio:${POSTGRES_PASSWORD}@db:5432/pdfstudio?schema=public
       - REDIS_URL=redis://redis:6379
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL}
@@ -41,19 +44,26 @@ services:
     volumes:
       - storage-data:/app/storage
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:15-alpine
     container_name: pdfstudio-postgres
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_USER: pdfstudio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: pdfstudio
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pdfstudio -d pdfstudio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -61,6 +71,11 @@ services:
     volumes:
       - redisdata:/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:
